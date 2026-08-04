@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ManageEmployeesApp - Login</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <header class="login-header">
+
+                <h1>ManageEmployeesApp</h1>
+
+                <p>
+                    Employee Management System
+                </p>
+
+            </header>
+
+
+            <form
+                id="login-form"
+                method="POST"
+                action="/login"
+            >
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Enter your username"
+                        value="{{ username or '' }}"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                {% if error %}
+
+                    <div
+                        id="login-error"
+                        class="message error-message"
+                        role="alert"
+                    >
+                        {{ error }}
+                    </div>
+
+                {% endif %}
+
+
+                {% if success %}
+
+                    <div
+                        id="login-success"
+                        class="message success-message"
+                        role="status"
+                    >
+                        {{ success }}
+                    </div>
+
+                {% endif %}
+
+
+                <button
+                    id="login-button"
+                    type="submit"
+                >
+                    Login
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
