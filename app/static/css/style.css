@@ -20,7 +20,17 @@ body {
 
     max-width: 420px;
 
+    min-height: 100vh;
+
     padding: 20px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
 }
 
 
@@ -193,4 +203,31 @@ body {
 .dashboard-card h2 {
 
     margin-bottom: 10px;
+}
+
+#logout-form {
+
+    margin-top: 25px;
+}
+
+
+#logout-button {
+
+    padding: 10px 25px;
+
+    border: none;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
+
+
+#logout-button:hover {
+
+    opacity: 0.85;
 }
