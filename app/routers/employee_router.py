@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.schemas.employee import EmployeeCreate
-from app.services.employee_service import create_employee
+from app.services.employee_service import create_employee, get_employees
 
 
 router = APIRouter(
@@ -28,6 +28,36 @@ def get_db():
 
     finally:
         db.close()
+
+@router.get(
+    "/",
+    response_class=HTMLResponse,
+    include_in_schema=False
+)
+def list_employees(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
+    username = request.session.get("username")
+
+    if not username:
+
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    employees = get_employees(db)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="employees/list.html",
+        context={
+            "username": username,
+            "employees": employees
+        }
+    )
 
 @router.get(
     "/create",

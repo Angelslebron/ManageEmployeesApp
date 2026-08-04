@@ -40,3 +40,14 @@ def create_employee(
         return None
 
     return employee
+
+
+def get_employees(
+    db: Session
+):
+
+    return (
+        db.query(Employee)
+        .order_by(Employee.id)
+        .all()
+    )

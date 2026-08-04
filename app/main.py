@@ -121,11 +121,14 @@ def dashboard(request: Request):
             status_code=303
         )
 
+    success = request.session.pop("success", None)
+
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
         context={
-            "username": username
+            "username": username,
+            "success": success
         }
     )
 
