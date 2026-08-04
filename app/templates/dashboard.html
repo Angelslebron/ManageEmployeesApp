@@ -13,10 +13,25 @@
 
     <title>ManageEmployeesApp - Dashboard</title>
 
+    {% if success %}
+
+    <div class="success-message">
+        {{ success }}
+    </div>
+
+{% endif %}
+
     <link
         rel="stylesheet"
         href="/static/css/style.css"
     >
+
+    <a 
+        href="/employees/create"
+        class = "button"
+    >
+        Create Employee
+    </a>
 
 </head>
 
