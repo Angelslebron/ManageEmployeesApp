@@ -118,7 +118,15 @@ def dashboard(request: Request):
             status_code=303
         )
 
+@app.post("/logout")
+def logout(request: Request):
 
+    request.session.clear()
+
+    return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
 
     return templates.TemplateResponse(
         request=request,
