@@ -9,7 +9,8 @@ from app.services.employee_service import (
     create_employee,
     get_employees,
     get_employee_by_id,
-    update_employee
+    update_employee,
+    delete_employee
 )
 
 
@@ -283,3 +284,49 @@ def update_employee_route(
         url="/employees/",
         status_code=303
     )
+
+@router.post(
+ "/{employee_id}/delete"
+)
+def delete_employee_route(
+    employee_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
+    username = request.session.get("username")
+
+    if not username:
+
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    employee = get_employee_by_id(
+        db,
+        employee_id
+    )
+
+    if not employee:
+
+        return RedirectResponse(
+            url="/employees/",
+            status_code=303
+        )
+
+    delete_employee(
+        db,
+        employee
+    )
+
+    request.session["success"] = (
+        "Employee deleted successfully."
+    )
+
+    return RedirectResponse(
+        url="/employees/",
+        status_code=303
+    )
+
+    
