@@ -6,6 +6,8 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import Base, engine, SessionLocal
 from app.services.auth_service import authenticate_user
+from app.models.user import User
+from app.models.employee import Employee
 
 
  
@@ -102,7 +104,6 @@ def login(
         status_code=303
     )
 
- 
 @app.get(
     "/dashboard",
     response_class=HTMLResponse
@@ -110,20 +111,10 @@ def login(
 def dashboard(request: Request):
 
     username = request.session.get("username")
- 
+
     if not username:
 
         return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
-
-@app.post("/logout")
-def logout(request: Request):
-
-    request.session.clear()
-
-    return RedirectResponse(
             url="/login",
             status_code=303
         )
@@ -135,3 +126,14 @@ def logout(request: Request):
             "username": username
         }
     )
+
+@app.post("/logout")
+def logout(request: Request):
+
+    request.session.clear()
+
+    return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+    
