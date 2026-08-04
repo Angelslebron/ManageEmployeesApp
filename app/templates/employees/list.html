@@ -102,6 +102,19 @@
                                     Edit
                                 </a>
 
+                                <form
+                                    action="/employees/{{employee.id}}/delete"
+                                    method="POST"
+                                    style="display: inline;"
+                                    onsubmit="return confirm('Are you sure you want to delete this employee?');"
+                                >
+
+                                        <button
+                                            type="submit"
+                                        > Delete
+
+                                    </button>
+                                </form>
                             </td>
 
                         </tr>
