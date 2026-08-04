@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Employee</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>Create Employee</h1>
+
+        {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+        <form
+            action="/employees/"
+            method="POST"
+        >
+
+            <div class="form-group">
+
+                <label for="first_name">
+                    First Name
+                </label>
+
+                <input
+                    type="text"
+                    id="first_name"
+                    name="first_name"
+                    maxlength="50"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="last_name">
+                    Last Name
+                </label>
+
+                <input
+                    type="text"
+                    id="last_name"
+                    name="last_name"
+                    maxlength="50"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    maxlength="255"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="position">
+                    Position
+                </label>
+
+                <input
+                    type="text"
+                    id="position"
+                    name="position"
+                    maxlength="100"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="salary">
+                    Salary
+                </label>
+
+                <input
+                    type="number"
+                    id="salary"
+                    name="salary"
+                    min="0.01"
+                    step="0.01"
+                    required
+                >
+
+            </div>
+
+
+            <button type="submit">
+                Create Employee
+            </button>
+
+        </form>
+
+
+        <a 
+            href="/dashboard"
+            class = "button secondary"
+        >
+            Back to Dashboard
+        </a>
+
+    </main>
+
+</body>
+
+</html>

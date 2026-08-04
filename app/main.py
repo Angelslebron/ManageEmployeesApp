@@ -8,6 +8,7 @@ from app.database import Base, engine, SessionLocal
 from app.services.auth_service import authenticate_user
 from app.models.user import User
 from app.models.employee import Employee
+from app.routers.employee_router import router as employee_router
 
 
  
@@ -19,6 +20,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.include_router(employee_router)
  
 app.add_middleware(
     SessionMiddleware,
