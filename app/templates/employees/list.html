@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,31 +26,47 @@
 
         <h1>Employees</h1>
 
-        <p>
-            Welcome, {{ username }}!
-        </p>
+        {% if success %}
 
-        {% if employees %}
+            <div class="success-message">
+                {{ success }}
+            </div>
 
-            <table>
+        {% endif %}
 
-                <thead>
+        {% if error %}
 
-                    <tr>
+            <div class="error-message">
+                {{ error }}
+            </div>
 
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Position</th>
-                        <th>Salary</th>
-                        <th>Actions</th>
+        {% endif %}
 
-                    </tr>
+        <table>
 
-                </thead>
+            <thead>
 
-                <tbody>
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Name</th>
+
+                    <th>Email</th>
+
+                    <th>Position</th>
+
+                    <th>Salary</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% if employees %}
 
                     {% for employee in employees %}
 
@@ -61,9 +78,6 @@
 
                             <td>
                                 {{ employee.first_name }}
-                            </td>
-
-                            <td>
                                 {{ employee.last_name }}
                             </td>
 
@@ -76,28 +90,43 @@
                             </td>
 
                             <td>
-                                {{ "%.2f"|format(employee.salary) }}
+                                {{ employee.salary }}
                             </td>
 
                             <td>
-                                <span>Actions coming soon</span>
+
+                                <a
+                                    href="/employees/{{ employee.id }}/edit"
+                                    class="button"
+                                >
+                                    Edit
+                                </a>
+
                             </td>
 
                         </tr>
 
                     {% endfor %}
 
-                </tbody>
+                {% else %}
 
-            </table>
+                    <tr>
 
-        {% else %}
+                        <td
+                            colspan="6"
+                        >
+                            No employees found.
+                        </td>
 
-            <p>
-                No employees found.
-            </p>
+                    </tr>
 
-        {% endif %}
+                {% endif %}
+
+            </tbody>
+
+        </table>
+
+        <br>
 
         <a
             href="/employees/create"
@@ -118,3 +147,4 @@
 </body>
 
 </html>
+```

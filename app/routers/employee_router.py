@@ -5,7 +5,12 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.schemas.employee import EmployeeCreate
-from app.services.employee_service import create_employee, get_employees
+from app.services.employee_service import (
+    create_employee,
+    get_employees,
+    get_employee_by_id,
+    update_employee
+)
 
 
 router = APIRouter(
@@ -28,6 +33,8 @@ def get_db():
 
     finally:
         db.close()
+
+
 
 @router.get(
     "/",
@@ -59,10 +66,55 @@ def list_employees(
         }
     )
 
+
+
+@router.get(
+    "/{employee_id}/edit",
+    response_class=HTMLResponse,
+    include_in_schema=False
+)
+def edit_employee_page(
+    employee_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
+    username = request.session.get("username")
+
+    if not username:
+
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    employee = get_employee_by_id(
+        db,
+        employee_id
+    )
+
+    if not employee:
+
+        return RedirectResponse(
+            url="/employees/",
+            status_code=303
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="employees/edit.html",
+        context={
+            "username": username,
+            "employee": employee
+        }
+    )
+
+
+
 @router.get(
     "/create",
     response_class=HTMLResponse,
-    include_in_schema= False
+    include_in_schema=False
 )
 def create_employee_page(request: Request):
 
@@ -82,6 +134,9 @@ def create_employee_page(request: Request):
             "username": username
         }
     )
+
+
+
 
 @router.post(
     "/",
@@ -137,5 +192,94 @@ def create_employee_route(
 
     return RedirectResponse(
         url="/dashboard",
+        status_code=303
+    )
+
+ 
+
+@router.post(
+    "/{employee_id}/edit",
+    response_class=HTMLResponse
+)
+def update_employee_route(
+    employee_id: int,
+    request: Request,
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    email: str = Form(...),
+    position: str = Form(...),
+    salary: float = Form(...),
+    db: Session = Depends(get_db)
+):
+
+    username = request.session.get("username")
+
+    if not username:
+
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    employee = get_employee_by_id(
+        db,
+        employee_id
+    )
+
+    if not employee:
+
+        return RedirectResponse(
+            url="/employees/",
+            status_code=303
+        )
+
+    try:
+
+        employee_data = EmployeeCreate(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            position=position,
+            salary=salary
+        )
+
+    except ValueError:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="employees/edit.html",
+            context={
+                "username": username,
+                "employee": employee,
+                "error": "Invalid employee information."
+            },
+            status_code=400
+        )
+
+    updated_employee = update_employee(
+        db,
+        employee,
+        employee_data
+    )
+
+    if not updated_employee:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="employees/edit.html",
+            context={
+                "username": username,
+                "employee": employee,
+                "error": "An employee with that email already exists."
+            },
+            status_code=400
+        )
+
+    request.session["success"] = (
+        "Employee updated successfully."
+    )
+
+    return RedirectResponse(
+        url="/employees/",
         status_code=303
     )
