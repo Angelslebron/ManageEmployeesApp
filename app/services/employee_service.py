@@ -101,3 +101,21 @@ def update_employee(
         return None
 
     return employee
+
+def delete_employee(
+    db: Session,
+    employee: Employee
+):
+
+    try:
+
+        db.delete(employee)
+        db.commit()
+
+    except IntegrityError:
+
+        db.rollback()
+
+        return False
+
+    return True
