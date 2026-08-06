@@ -1,119 +1,95 @@
-import uuid
-
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
-from tests.pages.login_page import LoginPage
-from tests.pages.employee_page import EmployeePage
 from tests.pages.edit_employee_page import EditEmployeePage
+from tests.pages.employee_page import EmployeePage
+from tests.pages.login_page import LoginPage
+from tests.utils.employee_factory import create_employee_data
 
-def test_update_employee_duplicate_email(driver):
 
+def test_update_employee_zero_salary(driver):
     login_page = LoginPage(driver)
     employee_page = EmployeePage(driver)
     edit_page = EditEmployeePage(driver)
+    wait = WebDriverWait(driver, 10)
 
     login_page.open()
-
     login_page.login(
         "admin",
-        "Admin123!"
+        "Admin123!",
     )
 
-    assert "/dashboard" in driver.current_url
-
-    email_one = (
-        f"duplicate.one.{uuid.uuid4().hex[:8]}@test.com"
+    wait.until(
+        EC.url_contains("/dashboard")
     )
 
-    email_two = (
-        f"duplicate.two.{uuid.uuid4().hex[:8]}@test.com"
+    employee = create_employee_data(
+        first_name="Lucia",
+        last_name="Mendoza",
+        position="Financial Analyst",
+        salary="3200",
     )
 
     employee_page.open_create()
 
     employee_page.fill_employee(
-        "Employee",
-        "One",
-        email_one,
-        "QA Tester",
-        "2500"
+        employee.first_name,
+        employee.last_name,
+        employee.email,
+        employee.position,
+        employee.salary,
     )
 
     employee_page.submit()
 
-    WebDriverWait(driver, 5).until(
+    wait.until(
         EC.url_contains("/dashboard")
     )
 
-    assert "/dashboard" in driver.current_url
+    employee_page.open_list()
 
-    employee_page.open_create()
-
-    employee_page.fill_employee(
-        "Employee",
-        "Two",
-        email_two,
-        "Developer",
-        "3000"
-    )
-
-    employee_page.submit()
-
-    WebDriverWait(driver, 5).until(
-        EC.url_contains("/dashboard")
-    )
-
-    assert "/dashboard" in driver.current_url
-
-    driver.get(
-        "http://127.0.0.1:8000/employees/"
-    )
-
-    WebDriverWait(driver, 5).until(
-        EC.presence_of_element_located(
-            (By.CSS_SELECTOR, "tbody tr")
+    employee_id = (
+        employee_page.get_employee_id_by_email(
+            employee.email
         )
     )
 
-    rows = driver.find_elements(
-        By.CSS_SELECTOR,
-        "tbody tr"
+    assert employee_id is not None
+
+    edit_page.open(employee_id)
+
+    wait.until(
+        EC.url_contains(
+            f"/employees/{employee_id}/edit"
+        )
     )
 
-    employee_one_id = None
-
-    for row in rows:
-
-        if "Employee One" in row.text:
-
-            employee_one_id = row.find_element(
-                By.TAG_NAME,
-                "td"
-            ).text
-
-            break
-
-    assert employee_one_id is not None
-
-    edit_page.open(employee_one_id)
-
     edit_page.update_employee(
-        "Employee",
-        "One",
-        email_two,
-        "Senior QA Tester",
-        "3500"
+        employee.first_name,
+        employee.last_name,
+        employee.email,
+        "Senior Financial Analyst",
+        "0",
     )
 
     edit_page.submit()
 
-    assert f"/employees/{employee_one_id}/edit" in driver.current_url
+    salary_input = wait.until(
+        EC.presence_of_element_located(
+            (By.ID, "salary")
+        )
+    )
 
-    body = driver.find_element(
-        By.TAG_NAME,
-        "body"
-    ).text
+    validation_message = driver.execute_script(
+        "return arguments[0].validationMessage;",
+        salary_input,
+    )
 
-    assert "already exists" in body
+    assert (
+        f"/employees/{employee_id}/edit"
+        in driver.current_url
+    )
+
+    assert salary_input.get_attribute("value") == "0"
+    assert validation_message 
