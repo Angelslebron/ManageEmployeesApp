@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -36,7 +37,6 @@ def get_db():
         db.close()
 
 
-
 @router.get(
     "/",
     response_class=HTMLResponse,
@@ -66,7 +66,6 @@ def list_employees(
             "employees": employees
         }
     )
-
 
 
 @router.get(
@@ -111,7 +110,6 @@ def edit_employee_page(
     )
 
 
-
 @router.get(
     "/create",
     response_class=HTMLResponse,
@@ -135,8 +133,6 @@ def create_employee_page(request: Request):
             "username": username
         }
     )
-
-
 
 
 @router.post(
@@ -196,7 +192,6 @@ def create_employee_route(
         status_code=303
     )
 
- 
 
 @router.post(
     "/{employee_id}/edit",
@@ -263,7 +258,7 @@ def update_employee_route(
         employee_data
     )
 
-    if not updated_employee:
+    if updated_employee is None:
 
         return templates.TemplateResponse(
             request=request,
@@ -285,8 +280,9 @@ def update_employee_route(
         status_code=303
     )
 
+
 @router.post(
- "/{employee_id}/delete"
+    "/{employee_id}/delete"
 )
 def delete_employee_route(
     employee_id: int,
@@ -329,4 +325,3 @@ def delete_employee_route(
         status_code=303
     )
 
-    
